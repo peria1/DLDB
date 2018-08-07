@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 20 11:05:41 2018
+
+These are my utility functions, that I cannot believe do not alrady exist in Python. 
+
+@author: bill
+"""
+
+
+
+
+def uichoosefile():
+    import tkinter as tk
+    from tkinter.filedialog import FileDialog
+    root = tk.Tk()
+    root.withdraw() # we don't want a full GUI, so keep the root window from appearing
+    filename = tk.filedialog.askopenfilename()
+    return filename
+
+def uichoosedir(): # not even kidding
+    from tkinter.filedialog import FileDialog
+    root = tk.Tk()
+    root.focus_force()
+    root.withdraw() # we don't want a full GUI, so keep the root window 
+                    #  from appearing
+    pathname = tk.filedialog.askdirectory()
+    return pathname
