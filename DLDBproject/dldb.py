@@ -77,6 +77,7 @@ class DLDB:
                 tileCount = 0
                 # need to record header here. Creation date, path to files, number of files, metadata header, etc.
                 txn.put('number_of_source_files'.encode(),pickle.dumps(len(newSourceImages)))
+                txn.put()
                 for currentFile in newSourceImages:
                     print('Processing ' + self.just_filename(currentFile))
                     try:
@@ -138,9 +139,13 @@ class DLDB:
 #                            for tile in tiles:   # TODO
 #                                txn.put(str(tileCount).encode(), pickle.dumps(tile))
 #                                tileCount += 1  
+#TODO put list of successfully processed files into database. Also put range of tile count
+#  for each source file.
+                                #
                     except BaseException as e:
                         print(self.just_filename(currentFile) + ' failed...')
                         print(e)
+                        
                     txn.put('number_of_tiles'.encode(),pickle.dumps(tileCount))  # TODO
                 
             env.close()
@@ -414,6 +419,16 @@ class DLDB:
             with envr.begin(write=False) as txn:
                 md = pickle.loads(txn.get(self.sourcefile.encode()))
             if key==None:
+                for key,value in md.items():
+                    try:
+                        if type(md[key])==str:
+                            mlist = md[key].split(sep=',')
+                            if len(mlist) > 1:
+                                md[key] = mlist[self.segment]
+                    except BaseException as e:
+                        pass
+                    
+                                
                 return md
             elif key=='?':
                 return([key for key in md.keys()])
